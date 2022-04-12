@@ -1,0 +1,61 @@
+
+mkdir project_files
+cd project_files
+git init 
+	//it will create a empty local repository
+	//after executing git init command what will happen? .git dir will be created
+	//once you execute the git init command it will maintain local grouping(working ares, stagging area, local repo)
+working area                               stagging area                                  local repo       remote repo
+-------------							----------------								--------------    ------------
+vi file1.java-----git add . --------------->file1.java ------git commit -m "description"--> file1.java--> git remote add         
+                  git add *           (keep all the developed files)    
+				  git add file1.java
+				  
+command: git add .                     -----> will move all the files in the working directory to stagging area.
+-------
+command: git add file1.java            -------> will only move this file from working area to stagging area.
+-------
+command: git add file1.java file2.java
+-------
+command: git add *.java                ---> will move all the .java files to stagging area from working directory
+-------
+
+
+--> if you are executing git commit for very first we need to provide/configure with the below credentials
+----> if you want to change the another user re run the below commands with required details
+command: git config --global user.name <github_username>
+-------
+command: git config --global user.email <github_username>
+------------
+
+once configuration part is done to see the user and email:
+command: git config --global --list
+-------
+
+command: git status  //will show 
+
+
+map the local repo with remote repo: 
+-----------------------------------
+--> map the local repository with remote repository 
+syntax: git remote add <AZ> <repository_url>
+------
+command: git remote add devops_tools https://github.com/mss-ec-apps-march/devops_tools.git
+-------
+---> now we have mapped the local repo to remote repo.
+---> to check whether the local repo is mapped to remote repo or not:
+
+command: git remote -v
+
+
+push the code to remote repo from local repo:
+------------------------------------------
+syntax: git push <aliasName>  <remote_repo URL>
+--------
+
+command: git push devops_tools https://github.com/mss-ec-apps-march/devops_tools.git
+---------
+
+
+
+
