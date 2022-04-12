@@ -1,0 +1,57 @@
+cicd pipelins script:groovy script
+--------------------
+it is very flexible to write ci/cd flow.we can integrate other tools very easily.
+
+scripted way:
+-----------------------
+node ('master') {
+  //script goes here
+	}
+#or
+
+node { #by default it will take master instance
+  //script goes here
+ }
+----------------------------------
+#jenkins_pipeline script
+
+node{
+    def mavenHome = tool name: "Maven-3.8.5"
+
+    echo "jenkins_home ${env.JENKINS_HOME}"
+
+    echo "jenkins_url ${env.JENKINS_URL}"
+
+    echo "Job Name ${env.JOB_NAME}"
+
+
+    stage("clone the code from github"){
+        git credentialsId: 'githublogincredentials', url: 'https://github.com/mss-ec-apps-march/maven-web-application.git'
+    }
+
+    stage("mvn clean package"){
+        sh "${mavenHome}/bin/mvn clean package"
+    }
+
+    stage("executeSonarqubeReport"){
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+    }
+
+    stage("deploy into nexus artifact"){
+        sh "${mavenHome}/bin/mvn deploy"
+    }
+
+    stage("deploy into Tomcat Server"){
+        sshagent(['8037e517-20c9-4aba-82df-d48981783b26']) {
+        sh "scp -o StrictHostKeyChecking=no /target/maven-web-application.war ec2-user@3.25.69.97:/opt/apache-tomcat-9.0.44/webapps"
+     }
+    }
+}
+
+
+interview:
+------------
+
+ How you specify various version of maven for your particular job?
+ ans: def mavenHome = tool name: "Maven-3.6.3"
+ Note: whatever the softwares you have installed in jenkins, those you can see under /var/lib/jenkins/tools
