@@ -1,0 +1,49 @@
+pepeline {
+    agent any
+    
+    tools{
+        maven "maven3.6.3"
+    }
+    
+    //automate the job poll scm
+    triggers{
+        pollSCM('* * * * *')
+    }
+    
+    options{
+        //addtimestamps
+        timestamps()
+        //discard old builds
+        buildDiscarder(buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')))
+    }
+    
+    stages{
+        stage("clone the code from git hub"){
+            step{
+                git credentialsId: 'githublogincredentials', url: 'https://github.com/mss-ec-apps-march/maven-web-application.git'
+            }
+        }
+        stage("build package"){
+            step{
+                sh "mvn clean package"
+            }
+        }
+        stage("build package"){
+            step{
+                sh "mvn sonar:sonar"
+            }
+        }
+        stage("artifact deploy"){
+            step{
+                sh "mvn deploy"
+            }
+        }
+        stage("deploy into tomcat"){
+            step{
+                sshagent(['8037e517-20c9-4aba-82df-d48981783b26']) {
+                sh "scp -o StrictHostKeyChecking=no /target/maven-web-application.war ec2-user@3.25.69.97:/opt/apache-tomcat-9.0.44/webapps"
+                }
+            }
+        }
+    }
+}
